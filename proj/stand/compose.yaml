@@ -1,0 +1,66 @@
+name: rbd-proj
+
+services:
+  center:
+    image: docker.io/library/postgres:17
+    container_name: rbd_center
+    command: ["postgres", "-c", "wal_level=logical"]
+    environment:
+      POSTGRES_USER: ${CENTER_USER:-center}
+      POSTGRES_PASSWORD: ${CENTER_PASSWORD:-center_pass}
+      POSTGRES_DB: ${CENTER_DB:-rbd_center}
+    volumes:
+      - ./center/init:/docker-entrypoint-initdb.d:Z
+      - center_data:/var/lib/postgresql/data:Z
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks: [center_net, rbd_wan]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  site:
+    image: docker.io/library/postgres:17
+    container_name: rbd_site
+    environment:
+      POSTGRES_USER: ${SITE_USER:-site}
+      POSTGRES_PASSWORD: ${SITE_PASSWORD:-site_pass}
+      POSTGRES_DB: ${SITE_DB:-rbd_site}
+    volumes:
+      - ./site/init:/docker-entrypoint-initdb.d:Z
+      - site_data:/var/lib/postgresql/data:Z
+    ports:
+      - "127.0.0.1:5433:5432"
+    networks: [site_net, rbd_wan]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  pgadmin:
+    image: docker.io/dpage/pgadmin:latest
+    container_name: rbd_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:Z
+    ports:
+      - "127.0.0.1:5050:80"
+    networks: [center_net, site_net]
+    depends_on: [center, site]
+
+networks:
+  center_net:
+    name: rbd_center_net
+  site_net:
+    name: rbd_site_net
+  rbd_wan:
+    name: rbd_wan
+
+volumes:
+  center_data:
+  site_data:

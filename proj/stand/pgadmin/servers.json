@@ -1,0 +1,22 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "center",
+      "Group": "rbd",
+      "Host": "rbd_center",
+      "Port": 5432,
+      "MaintenanceDB": "rbd_center",
+      "Username": "center",
+      "SSLMode": "prefer"
+    },
+    "2": {
+      "Name": "site",
+      "Group": "rbd",
+      "Host": "rbd_site",
+      "Port": 5432,
+      "MaintenanceDB": "rbd_site",
+      "Username": "site",
+      "SSLMode": "prefer"
+    }
+  }
+}
