@@ -1,0 +1,12 @@
+[package]
+name = "faculty-client"
+version = "1.0.0"
+edition = "2021"
+default-run = "faculty-client"
+
+[dependencies]
+anyhow = "1"
+chrono = "0.4"
+dotenvy = "0.15"
+postgres = { version = "0.19", features = ["with-chrono-0_4"] }
+rand = "0.8"

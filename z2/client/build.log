@@ -1,0 +1,513 @@
+    Updating crates.io index
+     Locking 269 packages to latest compatible versions
+      Adding async-executor v1.5.1 (available: v1.14.0)
+      Adding async-global-executor v2.3.1 (available: v2.4.1)
+      Adding async-std v1.12.0 (available: v1.13.2)
+      Adding generic-array v0.14.7 (available: v0.14.9)
+      Adding mongodb v2.8.2 (available: v3.9.1)
+      Adding rand v0.8.8 (available: v0.10.2)
+ Downloading crates ...
+  Downloaded atomic-waker v1.1.2
+  Downloaded async-global-executor v2.3.1
+  Downloaded async-lock v2.8.0
+  Downloaded async-attributes v1.1.2
+  Downloaded block-buffer v0.10.4
+  Downloaded async-channel v1.9.0
+  Downloaded async-std-resolver v0.21.2
+  Downloaded crypto-common v0.1.7
+  Downloaded darling_macro v0.13.4
+  Downloaded linked-hash-map v0.5.6
+  Downloaded fastrand v1.9.0
+  Downloaded matches v0.1.10
+  Downloaded subtle v2.6.1
+  Downloaded waker-fn v1.2.0
+  Downloaded zerofrom-derive v0.1.7
+  Downloaded enum-as-inner v0.4.0
+  Downloaded idna_adapter v1.2.2
+  Downloaded event-listener-strategy v0.5.4
+  Downloaded fnv v1.0.7
+  Downloaded strsim v0.10.0
+  Downloaded lazy_static v1.5.0
+  Downloaded convert_case v0.4.0
+  Downloaded rustc_version v0.2.3
+  Downloaded semver-parser v0.7.0
+  Downloaded event-listener v2.5.3
+  Downloaded untrusted v0.9.0
+  Downloaded rustc_version_runtime v0.2.1
+  Downloaded parking v2.2.1
+  Downloaded heck v0.4.1
+  Downloaded lru-cache v0.1.2
+  Downloaded potential_utf v0.1.6
+  Downloaded yoke-derive v0.8.2
+  Downloaded blocking v1.7.0
+  Downloaded async-channel v2.5.0
+  Downloaded async-signal v0.2.14
+  Downloaded utf8_iter v1.0.4
+  Downloaded sha-1 v0.10.1
+  Downloaded stable_deref_trait v1.2.1
+  Downloaded cpufeatures v0.2.17
+  Downloaded form_urlencoded v1.2.2
+  Downloaded pbkdf2 v0.11.0
+  Downloaded find-msvc-tools v0.1.12
+  Downloaded generic-array v0.14.7
+  Downloaded sct v0.7.1
+  Downloaded fastrand v2.5.0
+  Downloaded semver v0.9.0
+  Downloaded kv-log-macro v1.0.7
+  Downloaded piper v0.2.5
+  Downloaded pin-utils v0.1.0
+  Downloaded displaydoc v0.2.7
+  Downloaded ipnet v2.12.2
+  Downloaded darling v0.13.4
+  Downloaded md-5 v0.10.6
+  Downloaded resolv-conf v0.7.6
+  Downloaded serde_with_macros v1.5.2
+  Downloaded data-encoding v2.11.1
+  Downloaded async-task v4.7.1
+  Downloaded zerofrom v0.1.8
+  Downloaded async-io v1.13.0
+  Downloaded async-executor v1.5.1
+  Downloaded async-process v1.8.1
+  Downloaded bitflags v1.3.2
+  Downloaded smallvec v1.16.1
+  Downloaded rustls-pemfile v1.0.4
+  Downloaded concurrent-queue v2.5.0
+  Downloaded futures-executor v0.3.34
+  Downloaded sha2 v0.10.9
+  Downloaded shlex v2.0.1
+  Downloaded yoke v0.8.3
+  Downloaded zerovec-derive v0.11.6
+  Downloaded derivative v2.2.0
+  Downloaded digest v0.10.7
+  Downloaded event-listener v3.1.0
+  Downloaded futures-lite v1.13.0
+  Downloaded futures-lite v2.6.1
+  Downloaded hmac v0.12.1
+  Downloaded io-lifetimes v1.0.11
+  Downloaded litemap v0.8.3
+  Downloaded socket2 v0.4.10
+  Downloaded thiserror-impl v1.0.69
+  Downloaded typed-builder v0.10.0
+  Downloaded async-io v2.6.0
+  Downloaded base64 v0.13.1
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded derive_more v0.99.20
+  Downloaded event-listener v5.4.2
+  Downloaded icu_provider v2.3.1
+  Downloaded polling v2.8.0
+  Downloaded polling v3.11.0
+  Downloaded thiserror v1.0.69
+  Downloaded tinystr v0.8.4
+  Downloaded tokio-rustls v0.24.1
+  Downloaded base64 v0.21.7
+  Downloaded darling_core v0.13.4
+  Downloaded icu_locale_core v2.3.0
+  Downloaded icu_normalizer_data v2.3.0
+  Downloaded icu_collections v2.3.0
+  Downloaded serde_with v1.14.0
+  Downloaded cc v1.4.6
+  Downloaded icu_properties v2.3.0
+  Downloaded writeable v0.6.4
+  Downloaded value-bag v1.14.1
+  Downloaded synstructure v0.13.2
+  Downloaded zerotrie v0.2.5
+  Downloaded trust-dns-resolver v0.21.2
+  Downloaded url v2.5.8
+  Downloaded idna v1.1.0
+  Downloaded rustls-webpki v0.101.7
+  Downloaded icu_properties_data v2.3.0
+  Downloaded zerovec v0.11.8
+  Downloaded async-std v1.12.0
+  Downloaded rustls v0.21.12
+  Downloaded idna v0.2.3
+  Downloaded rustix v0.37.28
+  Downloaded rustix v0.38.44
+  Downloaded webpki-roots v0.25.4
+  Downloaded syn v1.0.109
+  Downloaded trust-dns-proto v0.21.2
+  Downloaded rustix v1.1.4
+  Downloaded icu_normalizer v2.3.0
+  Downloaded linux-raw-sys v0.3.8
+  Downloaded ring v0.17.14
+  Downloaded mongodb v2.8.2
+  Downloaded linux-raw-sys v0.4.15
+  Downloaded linux-raw-sys v0.12.1
+   Compiling syn v3.0.5
+   Compiling syn v2.0.119
+   Compiling synstructure v0.13.2
+   Compiling zerofrom-derive v0.1.7
+   Compiling zerofrom v0.1.8
+   Compiling yoke-derive v0.8.2
+   Compiling stable_deref_trait v1.2.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling yoke v0.8.3
+   Compiling syn v1.0.109
+   Compiling zerovec-derive v0.11.6
+   Compiling parking v2.2.1
+   Compiling zerovec v0.11.8
+   Compiling displaydoc v0.2.7
+   Compiling concurrent-queue v2.5.0
+   Compiling slab v0.4.12
+   Compiling value-bag v1.14.1
+   Compiling log v0.4.34
+   Compiling tinystr v0.8.4
+   Compiling generic-array v0.14.7
+   Compiling litemap v0.8.3
+   Compiling writeable v0.6.4
+   Compiling icu_locale_core v2.3.0
+   Compiling zerotrie v0.2.5
+   Compiling potential_utf v0.1.6
+   Compiling icu_normalizer_data v2.3.0
+   Compiling shlex v2.0.1
+   Compiling utf8_iter v1.0.4
+   Compiling icu_properties_data v2.3.0
+   Compiling smallvec v1.16.1
+   Compiling typenum v1.20.1
+   Compiling find-msvc-tools v0.1.12
+   Compiling cc v1.4.6
+   Compiling icu_collections v2.3.0
+   Compiling icu_provider v2.3.1
+   Compiling event-listener v2.5.3
+   Compiling io-lifetimes v1.0.11
+   Compiling bitflags v2.13.2
+   Compiling rustix v1.1.4
+   Compiling ring v0.17.14
+   Compiling polling v2.8.0
+   Compiling futures-lite v2.6.1
+   Compiling fastrand v1.9.0
+   Compiling rustix v0.37.28
+   Compiling linux-raw-sys v0.12.1
+   Compiling waker-fn v1.2.0
+   Compiling futures-lite v1.13.0
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling async-lock v2.8.0
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling event-listener v5.4.2
+   Compiling tokio-macros v2.7.2
+   Compiling async-io v2.6.0
+   Compiling async-io v1.13.0
+   Compiling linux-raw-sys v0.3.8
+   Compiling bitflags v1.3.2
+   Compiling subtle v2.6.1
+   Compiling digest v0.10.7
+   Compiling tokio v1.53.1
+   Compiling event-listener-strategy v0.5.4
+   Compiling polling v3.11.0
+   Compiling idna_adapter v1.2.2
+   Compiling futures-macro v0.3.34
+   Compiling socket2 v0.4.10
+   Compiling thiserror v1.0.69
+   Compiling untrusted v0.9.0
+   Compiling parking_lot_core v0.9.12
+   Compiling atomic-waker v1.1.2
+   Compiling rustix v0.38.44
+   Compiling async-task v4.7.1
+   Compiling fastrand v2.5.0
+   Compiling strsim v0.10.0
+   Compiling semver-parser v0.7.0
+   Compiling fnv v1.0.7
+   Compiling darling_core v0.13.4
+   Compiling semver v0.9.0
+   Compiling piper v0.2.5
+   Compiling form_urlencoded v1.2.2
+   Compiling futures-util v0.3.34
+   Compiling idna v1.1.0
+   Compiling async-channel v2.5.0
+   Compiling thiserror-impl v1.0.69
+   Compiling scopeguard v1.2.0
+   Compiling heck v0.4.1
+   Compiling matches v0.1.10
+   Compiling linux-raw-sys v0.4.15
+   Compiling idna v0.2.3
+   Compiling enum-as-inner v0.4.0
+   Compiling lock_api v0.4.14
+   Compiling blocking v1.7.0
+   Compiling async-signal v0.2.14
+   Compiling url v2.5.8
+   Compiling rand v0.8.8
+   Compiling darling_macro v0.13.4
+   Compiling rustc_version v0.2.3
+   Compiling async-executor v1.5.1
+   Compiling async-channel v1.9.0
+   Compiling event-listener v3.1.0
+   Compiling serde_derive v1.0.229
+   Compiling async-trait v0.1.92
+   Compiling futures-channel v0.3.34
+   Compiling ipnet v2.12.2
+   Compiling linked-hash-map v0.5.6
+   Compiling rustls v0.21.12
+   Compiling data-encoding v2.11.1
+   Compiling lazy_static v1.5.0
+   Compiling trust-dns-proto v0.21.2
+   Compiling serde v1.0.229
+   Compiling lru-cache v0.1.2
+   Compiling async-process v1.8.1
+   Compiling async-global-executor v2.3.1
+   Compiling rustc_version_runtime v0.2.1
+   Compiling darling v0.13.4
+   Compiling parking_lot v0.12.5
+   Compiling sct v0.7.1
+   Compiling rustls-webpki v0.101.7
+   Compiling async-attributes v1.1.2
+   Compiling kv-log-macro v1.0.7
+   Compiling pin-utils v0.1.0
+   Compiling resolv-conf v0.7.6
+   Compiling cpufeatures v0.2.17
+   Compiling async-std v1.12.0
+   Compiling trust-dns-resolver v0.21.2
+   Compiling serde_with_macros v1.5.2
+   Compiling convert_case v0.4.0
+   Compiling base64 v0.21.7
+   Compiling bson v2.15.0
+   Compiling tokio-rustls v0.24.1
+   Compiling tokio-util v0.7.19
+   Compiling rustls-pemfile v1.0.4
+   Compiling derive_more v0.99.20
+   Compiling serde_with v1.14.0
+   Compiling async-std-resolver v0.21.2
+   Compiling sha-1 v0.10.1
+   Compiling sha2 v0.10.9
+   Compiling futures-executor v0.3.34
+   Compiling hmac v0.12.1
+   Compiling md-5 v0.10.6
+   Compiling pbkdf2 v0.11.0
+   Compiling typed-builder v0.10.0
+   Compiling derivative v2.2.0
+   Compiling base64 v0.13.1
+   Compiling webpki-roots v0.25.4
+   Compiling mongodb v2.8.2
+   Compiling faculty-mongo-client v1.0.0 (/home/lkv/z2/client)
+error[E0425]: cannot find function `q08_groups_by_subject` in module `queries`
+  --> src/tasks.rs:79:37
+   |
+79 |             let pipeline = queries::q08_groups_by_subject(subject, teacher);
+   |                                     ^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q09_most_popular_subject` in module `queries`
+  --> src/tasks.rs:83:37
+   |
+83 |             let pipeline = queries::q09_most_popular_subject();
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q10_students_by_teacher` in module `queries`
+  --> src/tasks.rs:88:37
+   |
+88 |             let pipeline = queries::q10_students_by_teacher(id);
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: src/queries.rs:68:1
+   |
+68 | pub fn q02_students_by_letter(letter: &str) -> Vec<Document> {
+   | ------------------------------------------------------------ similarly named function `q02_students_by_letter` defined here
+   |
+help: a function with a similar name exists
+   |
+88 -             let pipeline = queries::q10_students_by_teacher(id);
+88 +             let pipeline = queries::q02_students_by_letter(id);
+   |
+
+error[E0425]: cannot find function `q11_pass_rate_by_subject` in module `queries`
+  --> src/tasks.rs:93:37
+   |
+93 |             let pipeline = queries::q11_pass_rate_by_subject(id);
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q12_average_grade_by_subject` in module `queries`
+  --> src/tasks.rs:98:37
+   |
+98 |             let pipeline = queries::q12_average_grade_by_subject(id);
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q13_top_group_by_average` in module `queries`
+   --> src/tasks.rs:102:37
+    |
+102 |             let pipeline = queries::q13_top_group_by_average();
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q14_excellent_students` in module `queries`
+   --> src/tasks.rs:107:37
+    |
+107 |             let pipeline = queries::q14_excellent_students(id);
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q15_expulsion_candidates` in module `queries`
+   --> src/tasks.rs:112:37
+    |
+112 |             let pipeline = queries::q15_expulsion_candidates(count);
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q16_attendance_by_subject` in module `queries`
+   --> src/tasks.rs:117:37
+    |
+117 |             let pipeline = queries::q16_attendance_by_subject(id);
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q17_absences_by_subject` in module `queries`
+   --> src/tasks.rs:122:37
+    |
+122 |             let pipeline = queries::q17_absences_by_subject(id);
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0425]: cannot find function `q18_students_by_teacher` in module `queries`
+   --> src/tasks.rs:127:37
+    |
+127 |             let pipeline = queries::q18_students_by_teacher(id);
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^
+    |
+   ::: src/queries.rs:68:1
+    |
+ 68 | pub fn q02_students_by_letter(letter: &str) -> Vec<Document> {
+    | ------------------------------------------------------------ similarly named function `q02_students_by_letter` defined here
+    |
+help: a function with a similar name exists
+    |
+127 -             let pipeline = queries::q18_students_by_teacher(id);
+127 +             let pipeline = queries::q02_students_by_letter(id);
+    |
+
+error[E0425]: cannot find function `q19_time_by_subject` in module `queries`
+   --> src/tasks.rs:134:37
+    |
+134 |             let pipeline = queries::q19_time_by_subject(id);
+    |                                     ^^^^^^^^^^^^^^^^^^^ not found in `queries`
+
+error[E0061]: this method takes 1 argument but 0 arguments were supplied
+   --> src/db.rs:17:26
+    |
+ 17 |     let collections = db.list_collection_names().run()?;
+    |                          ^^^^^^^^^^^^^^^^^^^^^-- argument #1 is missing
+    |
+note: method defined here
+   --> /home/lkv/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mongodb-2.8.2/src/sync/db.rs:168:12
+    |
+168 |     pub fn list_collection_names(
+    |            ^^^^^^^^^^^^^^^^^^^^^
+help: provide the argument
+    |
+ 17 |     let collections = db.list_collection_names(/* filter */).run()?;
+    |                                                ++++++++++++
+
+error[E0599]: no method named `run` found for enum `Result<T, E>` in the current scope
+  --> src/db.rs:17:50
+   |
+17 |     let collections = db.list_collection_names().run()?;
+   |                                                  ^^^ method not found in `Result<Vec<std::string::String>, mongodb::error::Error>`
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> src/selectors.rs:47:23
+    |
+ 47 |     let cursor = coll.find(doc! {}).sort(doc! { sort_field: 1 }).run()?;
+    |                       ^^^^--------- argument #2 is missing
+    |
+note: method defined here
+   --> /home/lkv/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mongodb-2.8.2/src/sync/coll.rs:583:12
+    |
+583 |     pub fn find(
+    |            ^^^^
+help: provide the argument
+    |
+ 47 |     let cursor = coll.find(doc! {}, /* options */).sort(doc! { sort_field: 1 }).run()?;
+    |                                   +++++++++++++++
+
+error[E0599]: no method named `sort` found for enum `Result<T, E>` in the current scope
+  --> src/selectors.rs:47:37
+   |
+47 |     let cursor = coll.find(doc! {}).sort(doc! { sort_field: 1 }).run()?;
+   |                                     ^^^^
+   |
+help: there is a method `or` with a similar name
+   |
+47 -     let cursor = coll.find(doc! {}).sort(doc! { sort_field: 1 }).run()?;
+47 +     let cursor = coll.find(doc! {}).or(doc! { sort_field: 1 }).run()?;
+   |
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> src/selectors.rs:113:10
+    |
+113 |         .find(doc! {})
+    |          ^^^^--------- argument #2 is missing
+    |
+note: method defined here
+   --> /home/lkv/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mongodb-2.8.2/src/sync/coll.rs:583:12
+    |
+583 |     pub fn find(
+    |            ^^^^
+help: provide the argument
+    |
+113 |         .find(doc! {}, /* options */)
+    |                      +++++++++++++++
+
+error[E0599]: no method named `sort` found for enum `Result<T, E>` in the current scope
+   --> src/selectors.rs:114:10
+    |
+112 |       let cursor = coll
+    |  __________________-
+113 | |         .find(doc! {})
+114 | |         .sort(doc! { "surname": 1, "first_name": 1, "patronymic": 1 })
+    | |_________-^^^^
+    |
+help: there is a method `or` with a similar name
+    |
+114 -         .sort(doc! { "surname": 1, "first_name": 1, "patronymic": 1 })
+114 +         .or(doc! { "surname": 1, "first_name": 1, "patronymic": 1 })
+    |
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> src/selectors.rs:175:14
+    |
+175 |             .find(filter)
+    |              ^^^^-------- argument #2 is missing
+    |
+note: method defined here
+   --> /home/lkv/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mongodb-2.8.2/src/sync/coll.rs:583:12
+    |
+583 |     pub fn find(
+    |            ^^^^
+help: provide the argument
+    |
+175 |             .find(filter, /* options */)
+    |                         +++++++++++++++
+
+error[E0599]: no method named `sort` found for enum `Result<T, E>` in the current scope
+   --> src/selectors.rs:176:14
+    |
+174 |           let cursor = coll
+    |  ______________________-
+175 | |             .find(filter)
+176 | |             .sort(doc! { "surname": 1, "first_name": 1 })
+    | |_____________-^^^^
+    |
+help: there is a method `or` with a similar name
+    |
+176 -             .sort(doc! { "surname": 1, "first_name": 1 })
+176 +             .or(doc! { "surname": 1, "first_name": 1 })
+    |
+
+error[E0061]: this method takes 2 arguments but 1 argument was supplied
+   --> src/tasks.rs:35:23
+    |
+ 35 |     let cursor = coll.aggregate(pipeline).run()?;
+    |                       ^^^^^^^^^---------- argument #2 is missing
+    |
+note: method defined here
+   --> /home/lkv/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/mongodb-2.8.2/src/sync/coll.rs:151:12
+    |
+151 |     pub fn aggregate(
+    |            ^^^^^^^^^
+help: provide the argument
+    |
+ 35 |     let cursor = coll.aggregate(pipeline, /* options */).run()?;
+    |                                         +++++++++++++++
+
+error[E0599]: no method named `run` found for enum `Result<T, E>` in the current scope
+  --> src/tasks.rs:35:43
+   |
+35 |     let cursor = coll.aggregate(pipeline).run()?;
+   |                                           ^^^ method not found in `Result<mongodb::sync::Cursor<mongodb::bson::Document>, mongodb::error::Error>`
+
+Some errors have detailed explanations: E0061, E0425, E0599.
+For more information about an error, try `rustc --explain E0061`.
+error: could not compile `faculty-mongo-client` (lib) due to 22 previous errors
+warning: build failed, waiting for other jobs to finish...
