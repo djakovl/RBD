@@ -44,10 +44,11 @@ services:
     image: docker.io/dpage/pgadmin4:latest
     container_name: rbd_pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@local}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
     volumes:
       - ./pgadmin/servers.json:/pgadmin4/servers.json:Z
+      - pgadmin_data:/var/lib/pgadmin:Z
     ports:
       - "127.0.0.1:5050:80"
     networks: [center_net, site_net]
@@ -64,3 +65,4 @@ networks:
 volumes:
   center_data:
   site_data:
+  pgadmin_data:
