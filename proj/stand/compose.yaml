@@ -41,7 +41,7 @@ services:
       retries: 12
 
   pgadmin:
-    image: docker.io/dpage/pgadmin:latest
+    image: docker.io/dpage/pgadmin4:latest
     container_name: rbd_pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@local}
