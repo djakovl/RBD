@@ -1,38 +1,32 @@
+//! Базовые примитивы ввода-вывода: чтение строки, пауза, обёртка операций.
+
+use crate::db::ClientError;
 use postgres::Client;
 use std::io::{self, Write};
-use tabled::{builder::Builder, settings::Style};
 
-pub fn prompt(msg: &str) -> String {
-    if !msg.is_empty() { print!("{} ", msg); io::stdout().flush().unwrap(); }
-    let mut buf = String::new();
-    io::stdin().read_line(&mut buf).unwrap();
-    buf.trim().to_string()
+/// Печатает подсказку без перевода строки и считывает одну строку ввода,
+/// обрезая пробелы по краям.
+pub fn prompt(message: &str) -> String {
+    print!("{message} ");
+    io::stdout().flush().expect("stdout недоступен");
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("stdin недоступен");
+    input.trim().to_owned()
 }
 
-pub fn pause() { prompt("\n[Enter — продолжить]"); }
+/// Ожидает нажатия Enter перед возвратом в меню.
+pub fn pause() {
+    let _ = prompt("\n[Enter — продолжить]");
+}
 
-pub fn mask_url(u: &str) -> String {
-    if let Some(p) = u.find("://") {
-        let rest = &u[p + 3..];
-        if let Some(at) = rest.find('@') {
-            if let Some(colon) = rest[..at].find(':') {
-                return format!("{}{}:***{}", &u[..p + 3], &rest[..colon], &rest[at..]);
-            }
-        }
+/// Выполняет операцию над подключением, печатает читаемое сообщение об ошибке
+/// (как из БД, так и из-за некорректного ввода) и делает паузу перед возвратом в меню.
+pub fn run_operation<F>(client: &mut Client, operation: F)
+where
+    F: Fn(&mut Client) -> Result<(), ClientError>,
+{
+    if let Err(error) = operation(client) {
+        println!("[ошибка операции] {error}");
     }
-    u.to_string()
-}
-
-pub fn op<F>(c: &mut Client, f: F) where F: Fn(&mut Client) -> Result<(), postgres::Error> {
-    if let Err(e) = f(c) { println!("[ошибка операции] {}", e); }
     pause();
-}
-
-pub fn print_table(headers: &[&str], rows: Vec<Vec<String>>) {
-    let mut builder = Builder::default();
-    builder.push_record(headers.iter().copied());
-    for row in rows { builder.push_record(row); }
-    let mut table = builder.build();
-    table.with(Style::ascii());
-    println!("{table}");
 }
