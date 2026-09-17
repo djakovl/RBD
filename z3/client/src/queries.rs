@@ -20,251 +20,150 @@ SELECT id, concat_ws(' ', surname, first_name, patronymic) || ' — ' || email A
 FROM faculty.students ORDER BY surname, first_name, patronymic
 "#;
 
-pub const Q01: &str = r#"
-SELECT d.name::text AS "Направление", g.group_number::text AS "Группа",
-       count(e.id)::text AS "Студентов"
-FROM faculty.directions d
-JOIN faculty.student_groups g ON g.direction_id = d.id
-LEFT JOIN faculty.enrollments e ON e.group_id = g.id
-WHERE d.id = $1
-GROUP BY d.name, g.id, g.group_number
-ORDER BY g.group_number
+// =====================================================================
+// Задание 3. Хранимые функции
+// =====================================================================
+
+pub const F01_AVG_GRADE_GROUP_SUBJECT: &str = r#"
+SELECT faculty.avg_grade_group_subject($1, $2)::text AS "Средняя оценка"
 "#;
 
-pub const Q02: &str = r#"
+pub const F02_AVG_GRADE_DIRECTION_SUBJECT: &str = r#"
+SELECT faculty.avg_grade_direction_subject($1, $2)::text AS "Средняя оценка"
+"#;
+
+pub const F03_COUNT_EXCELLENT_STUDENTS: &str = r#"
+SELECT faculty.count_excellent_students($1)::text AS "Отличников"
+"#;
+
+pub const F04_HAS_FAILED_EXAMS: &str = r#"
 SELECT concat_ws(' ', s.surname, s.first_name, s.patronymic)::text AS "Студент",
-       g.group_number::text AS "Группа", d.name::text AS "Направление",
-       s.email::text AS "Email"
+       faculty.has_failed_exams(s.id)::text AS "Есть несданные"
 FROM faculty.students s
-JOIN faculty.enrollments e ON e.student_id = s.id
-JOIN faculty.student_groups g ON g.id = e.group_id
-JOIN faculty.directions d ON d.id = g.direction_id
-WHERE s.surname ILIKE $1
-ORDER BY s.surname, s.first_name, g.group_number
+WHERE s.id = $1
 "#;
 
-pub const Q03: &str = r#"
-SELECT to_char(s.birth_date, 'DD.MM.YYYY')::text AS "Дата рождения",
-       concat_ws(' ', s.surname, s.first_name, s.patronymic)::text AS "Студент",
-       string_agg(DISTINCT g.group_number, ', ' ORDER BY g.group_number)::text AS "Группы"
-FROM faculty.students s
-JOIN faculty.enrollments e ON e.student_id = s.id
-JOIN faculty.student_groups g ON g.id = e.group_id
-WHERE extract(month FROM s.birth_date)::int = $1
-GROUP BY s.id
-ORDER BY extract(day FROM s.birth_date), s.surname
+pub const F05_MISSED_BY_STUDENT: &str = r#"
+SELECT student_name::text AS "Студент", missed_count::text AS "Пропусков"
+FROM faculty.missed_lessons_by_student()
+ORDER BY missed_count DESC
+LIMIT 30
 "#;
 
-pub const Q04: &str = r#"
-SELECT concat_ws(' ', s.surname, s.first_name, s.patronymic)::text AS "Студент",
-       to_char(s.birth_date, 'DD.MM.YYYY')::text AS "Дата рождения",
-       extract(year FROM age(current_date, s.birth_date))::int::text AS "Возраст"
-FROM faculty.students s
-JOIN faculty.enrollments e ON e.student_id = s.id
-WHERE e.group_id = $1
-ORDER BY s.surname, s.first_name
+pub const F06_MISSED_BY_GROUP: &str = r#"
+SELECT group_number::text AS "Группа", missed_count::text AS "Пропусков"
+FROM faculty.missed_lessons_by_group()
 "#;
 
-pub const Q05: &str = r#"
-SELECT to_char(s.birth_date, 'DD.MM.YYYY')::text AS "Дата рождения",
-       concat_ws(' ', s.surname, s.first_name, s.patronymic)::text AS "Студент",
-       s.email::text AS "Email"
-FROM faculty.students s
-WHERE extract(month FROM s.birth_date) = extract(month FROM current_date)
-ORDER BY extract(day FROM s.birth_date), s.surname
+pub const F07_MISSED_BY_DIRECTION: &str = r#"
+SELECT direction_name::text AS "Направление", missed_count::text AS "Пропусков"
+FROM faculty.missed_lessons_by_direction()
 "#;
 
-pub const Q06: &str = r#"
-SELECT d.name::text AS "Направление", count(e.id)::text AS "Студентов"
-FROM faculty.directions d
-LEFT JOIN faculty.student_groups g ON g.direction_id = d.id
-LEFT JOIN faculty.enrollments e ON e.group_id = g.id
-GROUP BY d.id, d.name
-ORDER BY d.name
+pub const F08_MISSED_BY_TEACHER: &str = r#"
+SELECT teacher_name::text AS "Преподаватель", missed_count::text AS "Пропусков"
+FROM faculty.missed_lessons_by_teacher()
 "#;
 
-pub const Q07: &str = r#"
+// =====================================================================
+// Задание 3. Триггеры — просмотр агрегатных таблиц и тестовые сценарии
+// =====================================================================
+
+pub const T09_GROUP_SUBJECT_AVG: &str = r#"
+SELECT g.group_number::text AS "Группа", s.name::text AS "Предмет",
+       t.avg_grade::text AS "Средняя оценка", t.grades_count::text AS "Оценок",
+       to_char(t.updated_at, 'DD.MM.YYYY HH24:MI:SS')::text AS "Обновлено"
+FROM faculty.group_subject_avg_grades t
+JOIN faculty.student_groups g ON g.id = t.group_id
+JOIN faculty.direction_subjects ds ON ds.id = t.direction_subject_id
+JOIN faculty.subjects s ON s.id = ds.subject_id
+ORDER BY t.updated_at DESC
+LIMIT 30
+"#;
+
+pub const T10_GROUP_OVERALL_AVG: &str = r#"
 SELECT g.group_number::text AS "Группа",
-       count(*) FILTER (WHERE ft.is_budget)::text AS "Бюджетные",
-       count(*) FILTER (WHERE NOT ft.is_budget)::text AS "Внебюджетные",
-       count(*)::text AS "Всего"
-FROM faculty.student_groups g
-JOIN faculty.enrollments e ON e.group_id = g.id
-JOIN faculty.funding_types ft ON ft.id = e.funding_type_id
-WHERE g.direction_id = $1
-GROUP BY g.id, g.group_number
-ORDER BY g.group_number
+       t.avg_grade::text AS "Средняя оценка", t.grades_count::text AS "Оценок",
+       to_char(t.updated_at, 'DD.MM.YYYY HH24:MI:SS')::text AS "Обновлено"
+FROM faculty.group_overall_avg_grades t
+JOIN faculty.student_groups g ON g.id = t.group_id
+ORDER BY t.updated_at DESC
 "#;
 
-pub const Q08: &str = r#"
-SELECT d.name::text AS "Направление", g.group_number::text AS "Группа",
-       s.name::text AS "Предмет",
-       concat_ws(' ', t.surname, t.first_name, t.patronymic)::text AS "Преподаватель"
-FROM faculty.direction_subjects ds
-JOIN faculty.directions d ON d.id = ds.direction_id
-JOIN faculty.subjects s ON s.id = ds.subject_id
-JOIN faculty.teachers t ON t.id = ds.teacher_id
-JOIN faculty.student_groups g ON g.direction_id = d.id
-WHERE s.id = $1 AND ($2::int IS NULL OR t.id = $2)
-ORDER BY d.name, g.group_number
-"#;
-
-pub const Q09: &str = r#"
-SELECT s.name::text AS "Дисциплина", count(DISTINCT e.student_id)::text AS "Студентов"
-FROM faculty.direction_subjects ds
-JOIN faculty.subjects s ON s.id = ds.subject_id
-JOIN faculty.student_groups g ON g.direction_id = ds.direction_id
-JOIN faculty.enrollments e ON e.group_id = g.id
-GROUP BY s.id, s.name
-ORDER BY count(DISTINCT e.student_id) DESC, s.name
-LIMIT 1
-"#;
-
-pub const Q10: &str = r#"
-SELECT concat_ws(' ', t.surname, t.first_name, t.patronymic)::text AS "Преподаватель",
-       count(DISTINCT e.student_id)::text AS "Студентов"
-FROM faculty.teachers t
-JOIN faculty.direction_subjects ds ON ds.teacher_id = t.id
-JOIN faculty.student_groups g ON g.direction_id = ds.direction_id
-JOIN faculty.enrollments e ON e.group_id = g.id
-WHERE t.id = $1
-GROUP BY t.id
-"#;
-
-pub const Q11: &str = r#"
-SELECT s.name::text AS "Дисциплина",
-       count(g.id) FILTER (WHERE g.grade >= 3)::text AS "Сдали",
-       count(g.id)::text AS "Всего оценок",
-       round(100.0 * count(g.id) FILTER (WHERE g.grade >= 3) / nullif(count(g.id), 0), 2)::text AS "Доля, %"
-FROM faculty.subjects s
-JOIN faculty.direction_subjects ds ON ds.subject_id = s.id
-LEFT JOIN faculty.grades g ON g.direction_subject_id = ds.id AND g.grade IS NOT NULL
-WHERE s.id = $1
-GROUP BY s.id, s.name
-"#;
-
-pub const Q12: &str = r#"
-SELECT s.name::text AS "Дисциплина",
-       round(avg(g.grade) FILTER (WHERE g.grade >= 3), 2)::text AS "Средняя оценка сдавших"
-FROM faculty.subjects s
-JOIN faculty.direction_subjects ds ON ds.subject_id = s.id
-LEFT JOIN faculty.grades g ON g.direction_subject_id = ds.id
-WHERE s.id = $1
-GROUP BY s.id, s.name
-"#;
-
-pub const Q13: &str = r#"
-SELECT g.group_number::text AS "Группа", d.name::text AS "Направление",
-       round(avg(gr.grade) FILTER (WHERE gr.grade >= 3), 2)::text AS "Средняя оценка"
-FROM faculty.student_groups g
-JOIN faculty.directions d ON d.id = g.direction_id
-JOIN faculty.enrollments e ON e.group_id = g.id
-JOIN faculty.grades gr ON gr.enrollment_id = e.id
-GROUP BY g.id, d.name
-HAVING count(gr.grade) FILTER (WHERE gr.grade >= 3) > 0
-ORDER BY avg(gr.grade) FILTER (WHERE gr.grade >= 3) DESC
-LIMIT 1
-"#;
-
-pub const Q14: &str = r#"
-SELECT concat_ws(' ', s.surname, s.first_name, s.patronymic)::text AS "Студент",
-       g.group_number::text AS "Группа",
-       round(avg(gr.grade), 2)::text AS "Средняя оценка"
-FROM faculty.students s
-JOIN faculty.enrollments e ON e.student_id = s.id
-JOIN faculty.student_groups g ON g.id = e.group_id
-JOIN faculty.grades gr ON gr.enrollment_id = e.id
-WHERE g.direction_id = $1
-GROUP BY s.id, e.id, g.group_number
-HAVING count(*) > 0
-   AND count(*) = count(gr.grade)
-   AND min(gr.grade) = 5
-ORDER BY s.surname, s.first_name
-"#;
-
-pub const Q15: &str = r#"
-SELECT concat_ws(' ', s.surname, s.first_name, s.patronymic)::text AS "Студент",
-       g.group_number::text AS "Группа",
-       count(*) FILTER (WHERE gr.grade IS NULL OR gr.grade = 2)::text AS "Несданных"
-FROM faculty.students s
-JOIN faculty.enrollments e ON e.student_id = s.id
-JOIN faculty.student_groups g ON g.id = e.group_id
-JOIN faculty.grades gr ON gr.enrollment_id = e.id
-GROUP BY s.id, e.id, g.group_number
-HAVING count(*) FILTER (WHERE gr.grade IS NULL OR gr.grade = 2) >= $1
-ORDER BY count(*) FILTER (WHERE gr.grade IS NULL OR gr.grade = 2) DESC, s.surname
-"#;
-
-pub const Q16: &str = r#"
-SELECT to_char(l.lesson_date, 'DD.MM.YYYY')::text AS "Дата",
-       g.group_number::text AS "Группа",
-       s.name::text AS "Предмет",
-       count(a.enrollment_id) FILTER (WHERE a.attended)::text AS "Присутствовали",
-       count(a.enrollment_id)::text AS "Всего"
-FROM faculty.lessons l
-JOIN faculty.student_groups g ON g.id = l.group_id
-JOIN faculty.direction_subjects ds ON ds.id = l.direction_subject_id
-JOIN faculty.subjects s ON s.id = ds.subject_id
-LEFT JOIN faculty.attendance a ON a.lesson_id = l.id
-WHERE s.id = $1
-GROUP BY l.id, g.group_number, s.name
-ORDER BY l.lesson_date, g.group_number
-"#;
-
-pub const Q17: &str = r#"
-SELECT concat_ws(' ', st.surname, st.first_name, st.patronymic)::text AS "Студент",
-       g.group_number::text AS "Группа", count(*)::text AS "Пропусков"
-FROM faculty.attendance a
-JOIN faculty.enrollments e ON e.id = a.enrollment_id
-JOIN faculty.students st ON st.id = e.student_id
-JOIN faculty.student_groups g ON g.id = e.group_id
-JOIN faculty.lessons l ON l.id = a.lesson_id
-JOIN faculty.direction_subjects ds ON ds.id = l.direction_subject_id
-WHERE ds.subject_id = $1 AND NOT a.attended
-GROUP BY st.id, g.group_number
-ORDER BY count(*) DESC, st.surname
-"#;
-
-pub const Q18: &str = r#"
-SELECT
-    result.student::text AS "Студент",
-    result.group_number::text AS "Группа",
-    result.subject_name::text AS "Предмет"
-FROM (
-    SELECT DISTINCT
-        st.id AS student_id,
-        st.surname,
-        st.first_name,
-        st.patronymic,
-        concat_ws(' ', st.surname, st.first_name, st.patronymic) AS student,
-        g.group_number,
-        s.name AS subject_name
-    FROM faculty.lessons l
-    JOIN faculty.direction_subjects ds ON ds.id = l.direction_subject_id
-    JOIN faculty.subjects s ON s.id = ds.subject_id
-    JOIN faculty.student_groups g ON g.id = l.group_id
-    JOIN faculty.attendance a ON a.lesson_id = l.id AND a.attended
-    JOIN faculty.enrollments e ON e.id = a.enrollment_id
-    JOIN faculty.students st ON st.id = e.student_id
-    WHERE ds.teacher_id = $1
-) AS result
-ORDER BY result.subject_name, result.group_number,
-         result.surname, result.first_name, result.patronymic
-"#;
-
-pub const Q19: &str = r#"
+pub const T11_SUBJECT_AVG: &str = r#"
 SELECT s.name::text AS "Предмет",
-       count(a.lesson_id) FILTER (WHERE a.attended)::text AS "Посещено занятий",
-       coalesce(sum(extract(epoch FROM (ls.end_time - ls.start_time)) / 60)
-           FILTER (WHERE a.attended), 0)::int::text AS "Минут"
-FROM faculty.students st
-JOIN faculty.enrollments e ON e.student_id = st.id
-JOIN faculty.attendance a ON a.enrollment_id = e.id
-JOIN faculty.lessons l ON l.id = a.lesson_id
-JOIN faculty.lesson_slots ls ON ls.id = l.slot_id
-JOIN faculty.direction_subjects ds ON ds.id = l.direction_subject_id
+       t.avg_grade::text AS "Средняя оценка", t.grades_count::text AS "Оценок",
+       to_char(t.updated_at, 'DD.MM.YYYY HH24:MI:SS')::text AS "Обновлено"
+FROM faculty.subject_avg_grades t
+JOIN faculty.direction_subjects ds ON ds.id = t.direction_subject_id
 JOIN faculty.subjects s ON s.id = ds.subject_id
-WHERE st.id = $1
-GROUP BY s.id, s.name
-ORDER BY s.name
+ORDER BY t.updated_at DESC
+LIMIT 30
 "#;
+
+pub const T_PICK_GRADE_ROW: &str = r#"
+SELECT gr.id, concat_ws(' ', st.surname, st.first_name, st.patronymic) || ' — ' ||
+       s.name || ' (оценка: ' || coalesce(gr.grade::text, 'нет') || ')' AS label
+FROM faculty.grades gr
+JOIN faculty.enrollments e ON e.id = gr.enrollment_id
+JOIN faculty.students st ON st.id = e.student_id
+JOIN faculty.direction_subjects ds ON ds.id = gr.direction_subject_id
+JOIN faculty.subjects s ON s.id = ds.subject_id
+ORDER BY gr.id
+LIMIT 20
+"#;
+
+pub const T14_INSERT_INVALID_GRADE: &str = r#"
+INSERT INTO faculty.grades(enrollment_id, direction_subject_id, grade)
+SELECT e.id, ds.id, 1
+FROM faculty.enrollments e
+JOIN faculty.direction_subjects ds
+     ON ds.direction_id = (SELECT g.direction_id FROM faculty.student_groups g WHERE g.id = e.group_id)
+WHERE e.id = $1
+LIMIT 1
+"#;
+
+pub const T15_UPDATE_WRONG_TEACHER: &str = r#"
+UPDATE faculty.grades
+SET grade = 5, graded_by_teacher_id = $2
+WHERE id = $1
+"#;
+
+pub const T15_UPDATE_CORRECT_TEACHER: &str = r#"
+UPDATE faculty.grades g
+SET grade = 5, graded_by_teacher_id = ds.teacher_id
+FROM faculty.direction_subjects ds
+WHERE ds.id = g.direction_subject_id AND g.id = $1
+"#;
+
+// =====================================================================
+// Задание 3. Доп. параметры групп
+// =====================================================================
+
+pub const P12_NUMERIC_PARAM_STATS: &str = r#"
+SELECT avg_value::text AS "Среднее", sum_value::text AS "Сумма",
+       values_count::text AS "Значений"
+FROM faculty.numeric_param_stats($1, $2)
+"#;
+
+pub const P13_SEARCH_TEXT_PARAM: &str = r#"
+SELECT student_name::text AS "Студент", group_number::text AS "Группа",
+       param_name::text AS "Параметр", found_value::text AS "Значение"
+FROM faculty.search_text_param_detailed($1)
+"#;
+
+pub const PARAM_NAMES_NUMERIC: &str = r#"
+SELECT dpd.id AS id, dpd.param_name AS label
+FROM faculty.direction_param_defs dpd
+JOIN faculty.param_types pt ON pt.id = dpd.param_type_id
+WHERE pt.code = 'numeric'
+ORDER BY dpd.param_name
+"#;
+
+// =====================================================================
+// Задание 3. Демонстрация сломанного триггера (самозацикливание)
+// =====================================================================
+
+pub const B16_ENABLE_BROKEN_TRIGGER: &str = "SELECT faculty.enable_broken_trigger()";
+pub const B16_DISABLE_BROKEN_TRIGGER: &str = "SELECT faculty.disable_broken_trigger()";
+pub const B16_TRIGGER_UPDATE: &str = "UPDATE faculty.grades SET grade = 5 WHERE id = $1";

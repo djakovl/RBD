@@ -93,9 +93,12 @@ fn run() -> Result<()> {
 
     if reset {
         tx.batch_execute(
-            "TRUNCATE faculty.attendance, faculty.lessons, faculty.grades, \
-             faculty.enrollments, faculty.student_phones, faculty.student_addresses, \
-             faculty.students RESTART IDENTITY CASCADE",
+            "TRUNCATE faculty.student_param_values, faculty.attendance, faculty.lessons, \
+             faculty.grades, faculty.enrollments, faculty.student_phones, \
+             faculty.student_addresses, faculty.students RESTART IDENTITY CASCADE",
+        )?;
+        tx.batch_execute(
+            "TRUNCATE faculty.group_param_defs, faculty.direction_param_defs RESTART IDENTITY CASCADE",
         )?;
     } else {
         let existing: i64 = tx
@@ -136,8 +139,14 @@ fn run() -> Result<()> {
     }
 
     create_lessons_and_attendance(&mut tx, &mut rng)?;
+
+    let params_filled = setup_group_params(&mut tx, &mut rng)?;
+
     tx.commit()?;
-    println!("Создано студентов/зачислений: {enrollment_count}. Оценки, занятия и посещаемость добавлены.");
+    println!(
+        "Создано студентов/зачислений: {enrollment_count}. Оценки, занятия и посещаемость добавлены."
+    );
+    println!("Доп. параметры групп заполнены: {params_filled} значений.");
     Ok(())
 }
 
@@ -262,4 +271,127 @@ fn create_lessons_and_attendance(tx: &mut Transaction<'_>, rng: &mut impl Rng) -
         }
     }
     Ok(())
+}
+
+fn setup_group_params(tx: &mut Transaction<'_>, rng: &mut impl Rng) -> Result<usize> {
+    let direction_rows = tx.query("SELECT id, name FROM faculty.directions ORDER BY id", &[])?;
+
+    let numeric_param_name = "Стипендия, руб.";
+    fn text_param_by_direction(direction_name: &str) -> (&'static str, Vec<&'static str>) {
+        match direction_name {
+            "Программная инженерия" => (
+                "Язык программирования",
+                vec!["Go", "Rust", "Python", "Java", "TypeScript"],
+            ),
+            "Информационная безопасность" => (
+                "Специализация ИБ",
+                vec!["Пентест", "SOC", "Криптография", "DevSecOps"],
+            ),
+            "Прикладная информатика" => (
+                "Тема курсовой",
+                vec!["Веб-сервис", "Мобильное приложение", "Аналитика данных", "ИИ-модель"],
+            ),
+            "Экономика" => (
+                "Направление специализации",
+                vec!["Финансы", "Аудит", "Налогообложение", "Инвестиции"],
+            ),
+            "Менеджмент" => (
+                "Профиль менеджмента",
+                vec!["HR", "Проектный", "Стратегический", "Операционный"],
+            ),
+            _ => ("Дополнительный параметр", vec!["Значение A", "Значение B"]),
+        }
+    }
+
+    let mut values_written = 0usize;
+
+    for direction in &direction_rows {
+        let direction_id: i32 = direction.get(0);
+        let direction_name: String = direction.get(1);
+        let (text_param_name, text_values) = text_param_by_direction(&direction_name);
+
+        let numeric_def_id: i32 = tx
+            .query_one(
+                "INSERT INTO faculty.direction_param_defs(direction_id, param_name, param_type_id) \
+                 VALUES ($1, $2, (SELECT id FROM faculty.param_types WHERE code = 'numeric')) \
+                 ON CONFLICT (direction_id, param_name) \
+                 DO UPDATE SET param_name = EXCLUDED.param_name \
+                 RETURNING id",
+                &[&direction_id, &numeric_param_name],
+            )?
+            .get(0);
+
+        let text_def_id: i32 = tx
+            .query_one(
+                "INSERT INTO faculty.direction_param_defs(direction_id, param_name, param_type_id) \
+                 VALUES ($1, $2, (SELECT id FROM faculty.param_types WHERE code = 'text')) \
+                 ON CONFLICT (direction_id, param_name) \
+                 DO UPDATE SET param_name = EXCLUDED.param_name \
+                 RETURNING id",
+                &[&direction_id, &text_param_name],
+            )?
+            .get(0);
+
+        let group_rows = tx.query(
+            "SELECT id FROM faculty.student_groups WHERE direction_id = $1",
+            &[&direction_id],
+        )?;
+
+        for group_row in &group_rows {
+            let group_id: i32 = group_row.get(0);
+
+            let numeric_gpd_id: i32 = tx
+                .query_one(
+                    "INSERT INTO faculty.group_param_defs(group_id, param_def_id) VALUES ($1, $2) \
+                     ON CONFLICT (group_id, param_def_id) \
+                     DO UPDATE SET group_id = EXCLUDED.group_id \
+                     RETURNING id",
+                    &[&group_id, &numeric_def_id],
+                )?
+                .get(0);
+
+            let text_gpd_id: i32 = tx
+                .query_one(
+                    "INSERT INTO faculty.group_param_defs(group_id, param_def_id) VALUES ($1, $2) \
+                     ON CONFLICT (group_id, param_def_id) \
+                     DO UPDATE SET group_id = EXCLUDED.group_id \
+                     RETURNING id",
+                    &[&group_id, &text_def_id],
+                )?
+                .get(0);
+
+            let student_rows = tx.query(
+                "SELECT student_id FROM faculty.enrollments WHERE group_id = $1",
+                &[&group_id],
+            )?;
+
+            for student_row in &student_rows {
+                let student_id: i64 = student_row.get(0);
+
+                let stipend: i32 = rng.gen_range(3..=15) * 1000;
+                // stipend -- наше собственное целое число (не пользовательский
+                // ввод), поэтому подстановка в текст запроса безопасна.
+                let insert_numeric_sql = format!(
+                    "INSERT INTO faculty.student_param_values(group_param_def_id, student_id, value_numeric) \
+                     VALUES ($1, $2, {stipend}) \
+                     ON CONFLICT (group_param_def_id, student_id) \
+                     DO UPDATE SET value_numeric = EXCLUDED.value_numeric"
+                );
+                tx.execute(&insert_numeric_sql, &[&numeric_gpd_id, &student_id])?;
+                values_written += 1;
+
+                let text_value = *text_values.choose(rng).unwrap();
+                tx.execute(
+                    "INSERT INTO faculty.student_param_values(group_param_def_id, student_id, value_text) \
+                     VALUES ($1, $2, $3) \
+                     ON CONFLICT (group_param_def_id, student_id) \
+                     DO UPDATE SET value_text = EXCLUDED.value_text",
+                    &[&text_gpd_id, &student_id, &text_value],
+                )?;
+                values_written += 1;
+            }
+        }
+    }
+
+    Ok(values_written)
 }

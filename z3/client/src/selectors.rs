@@ -32,6 +32,16 @@ pub fn read_letter(prompt: &str) -> Result<String> {
     }
 }
 
+pub fn read_text(prompt: &str) -> Result<String> {
+    loop {
+        let value = read_line(prompt)?;
+        if !value.is_empty() {
+            return Ok(value);
+        }
+        println!("Введите хотя бы один символ.");
+    }
+}
+
 fn choose_id(client: &mut Client, title: &str, sql: &str, allow_all: bool) -> Result<Option<i32>> {
     let rows = client.query(sql, &[])?;
     if rows.is_empty() {
@@ -57,6 +67,29 @@ fn choose_id(client: &mut Client, title: &str, sql: &str, allow_all: bool) -> Re
     }
 }
 
+fn choose_id_i64(client: &mut Client, title: &str, sql: &str) -> Result<i64> {
+    let rows = client.query(sql, &[])?;
+    if rows.is_empty() {
+        bail!("справочник пуст: {title}");
+    }
+
+    println!("\n{title}");
+    for (index, row) in rows.iter().enumerate() {
+        let label: String = row.get("label");
+        println!("{}. {label}", index + 1);
+    }
+
+    loop {
+        let raw = read_line("Введите номер: ")?;
+        if let Ok(number) = raw.parse::<usize>() {
+            if (1..=rows.len()).contains(&number) {
+                return Ok(rows[number - 1].get("id"));
+            }
+        }
+        println!("Такого пункта нет.");
+    }
+}
+
 pub fn direction(client: &mut Client) -> Result<i32> {
     Ok(choose_id(client, "Выберите направление:", queries::DIRECTIONS, false)?.expect("выбор обязателен"))
 }
@@ -71,6 +104,39 @@ pub fn subject(client: &mut Client) -> Result<i32> {
 
 pub fn teacher(client: &mut Client, allow_all: bool) -> Result<Option<i32>> {
     choose_id(client, "Выберите преподавателя:", queries::TEACHERS, allow_all)
+}
+
+pub fn any_teacher(client: &mut Client) -> Result<i32> {
+    Ok(teacher(client, false)?.expect("выбор обязателен"))
+}
+
+pub fn any_student(client: &mut Client) -> Result<i64> {
+    choose_id_i64(client, "Выберите студента:", queries::STUDENTS)
+}
+
+pub fn any_grade_row(client: &mut Client) -> Result<i64> {
+    choose_id_i64(client, "Выберите запись с оценкой:", queries::T_PICK_GRADE_ROW)
+}
+
+pub fn numeric_param_name(client: &mut Client) -> Result<String> {
+    let rows = client.query(queries::PARAM_NAMES_NUMERIC, &[])?;
+    if rows.is_empty() {
+        bail!("нет ни одного числового доп. параметра — сначала настройте direction_param_defs");
+    }
+    println!("\nВыберите числовой параметр:");
+    for (index, row) in rows.iter().enumerate() {
+        let label: String = row.get("label");
+        println!("{}. {label}", index + 1);
+    }
+    loop {
+        let raw = read_line("Введите номер: ")?;
+        if let Ok(number) = raw.parse::<usize>() {
+            if (1..=rows.len()).contains(&number) {
+                return Ok(rows[number - 1].get("label"));
+            }
+        }
+        println!("Такого пункта нет.");
+    }
 }
 
 pub fn student_search(client: &mut Client) -> Result<Option<i64>> {
