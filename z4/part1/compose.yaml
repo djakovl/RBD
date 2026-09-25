@@ -1,0 +1,14 @@
+services:
+  primary:
+    image: docker.io/library/postgres:18
+    container_name: z4-primary
+    environment: { POSTGRES_USER: postgres, POSTGRES_PASSWORD: postgres, POSTGRES_DB: postgres }
+    ports: ["54321:5432"]
+    volumes: ["primary_data:/var/lib/postgresql"]
+  mirror:
+    image: docker.io/library/postgres:18
+    container_name: z4-mirror
+    environment: { POSTGRES_USER: postgres, POSTGRES_PASSWORD: postgres, POSTGRES_DB: postgres }
+    ports: ["54322:5432"]
+    volumes: ["mirror_data:/var/lib/postgresql"]
+volumes: { primary_data: {}, mirror_data: {} }

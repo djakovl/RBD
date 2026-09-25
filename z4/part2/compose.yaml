@@ -1,0 +1,18 @@
+services:
+  university:
+    image: docker.io/library/postgres:18
+    container_name: z4-university
+    environment: { POSTGRES_USER: postgres, POSTGRES_PASSWORD: postgres, POSTGRES_DB: faculty_db }
+    ports: ["54323:5432"]
+    volumes:
+      - university_data:/var/lib/postgresql
+      - ./university/init:/docker-entrypoint-initdb.d:ro
+  personal:
+    image: docker.io/library/postgres:18
+    container_name: z4-personal
+    environment: { POSTGRES_USER: postgres, POSTGRES_PASSWORD: postgres, POSTGRES_DB: personal_db }
+    ports: ["54324:5432"]
+    volumes:
+      - personal_data:/var/lib/postgresql
+      - ./personal/init:/docker-entrypoint-initdb.d:ro
+volumes: { university_data: {}, personal_data: {} }

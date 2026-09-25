@@ -2,17 +2,11 @@
 \set ON_ERROR_STOP on
 SET search_path TO faculty, public;
 
--- ---------------------------------------------------------------------
--- "Ломающийся" триггер: при UPDATE оценки обновляет ту же строку снова,
--- вызывая сам себя рекурсивно. Никакого условия выхода нет специально —
--- это демонстрация антипаттерна "триггер без защиты от самозапуска".
--- ---------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION faculty.trg_broken_self_loop() RETURNS trigger
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- Намеренно НЕ проверяем, что значение уже такое же (нет условия останова).
-    -- Каждый UPDATE вызывает этот же триггер повторно -> бесконечная рекурсия.
     UPDATE faculty.grades
     SET grade = NEW.grade
     WHERE id = NEW.id;
@@ -30,13 +24,12 @@ CREATE TRIGGER trg_broken_self_loop
     FOR EACH ROW
     EXECUTE FUNCTION faculty.trg_broken_self_loop();
 
--- По умолчанию триггер ВЫКЛЮЧЕН, чтобы не сломать обычную работу БД.
 ALTER TABLE faculty.grades DISABLE TRIGGER trg_broken_self_loop;
 
--- ---------------------------------------------------------------------
--- Функции-обёртки для включения/выключения "ломающегося" триггера,
--- чтобы демо-клиент мог безопасно показать сбой и восстановить работу.
--- ---------------------------------------------------------------------
+
+
+
+
 CREATE OR REPLACE FUNCTION faculty.enable_broken_trigger() RETURNS void
 LANGUAGE sql
 AS $$
